@@ -1,4 +1,6 @@
-const MongoClient = require('mongodb').MongoClient;
+//const MongoClient = require('mongodb').MongoClient;
+const {MongoClient, ObjectID} = require('mongodb');
+
 
 MongoClient.connect('mongodb://localhost:27017/Todoapp', (err,db) => {
     if(err) {
@@ -26,6 +28,6 @@ MongoClient.connect('mongodb://localhost:27017/Todoapp', (err,db) => {
     //     }
     //     console.log(JSON.stringify(result.ops, undefined, 2));
     // });
-    // db.close();
+    db.close();
     
 });

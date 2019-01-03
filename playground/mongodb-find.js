@@ -6,29 +6,27 @@ MongoClient.connect('mongodb://localhost:27017/Todoapp', (err,db) => {
     }
     console.log('Connected to MongoDB server');
 
-    // db.collection('Users').find({ 
-    //         name: 'Aly Ticali' 
-    //     }).toArray().then((docs) => {
-    //     console.log('Users');
-    //     console.log(JSON.stringify(docs, undefined, 2));
-    // }, (err) => {
-    //     console.log('Unable to fetch Users', err);      
-    // });
-    // db.collection('Todos').find({ 
-    //         _id: new ObjectID('5c195cce80b0e708c1d4ef5d') 
+    // db.collection('Todos').find({
+    //     _id: new ObjectID('5c195cce80b0e708c1d4ef5d')
     //     }).toArray().then((docs) => {
     //     console.log('Todos');
     //     console.log(JSON.stringify(docs, undefined, 2));
     // }, (err) => {
-    //     console.log('Unable to fetch Todos', err);      
+    //     console.log('Unable to fetch todos', err);
+    // });
+    // 
+    // db.collection('Todos').find().count().then((count) => {
+    //     console.log(`Todos count: ${count}`);
+    // } , (err) => {
+    //     console.log('Unable to fetch todos', err);
     // });
 
-    // db.collection('Todos').find().count().then((count) => {
-    // console.log('Todos');
-    // console.log(`Todos count ${count}`);
-    // }, (err) => {
-    //     console.log('Unable to fetch Todos', err);      
-    // });
+    db.collection('Users').find({location: 'Greenfield, WI'}).toArray().then((docs) => {
+        console.log('Menomonee Falls Users');
+        console.log(JSON.stringify(docs, undefined, 2));
+    }, (err) => {
+        console.log('Unable to fetch users...');
+    });
 
     db.close();
     
