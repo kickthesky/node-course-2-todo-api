@@ -7,11 +7,11 @@ const {Todo} = require('./../models/todos');
 
 const todos = [
     { _id: new ObjectID(), text: 'First test todo' },
-    { _id: new ObjectID(), text: 'Second test todo' }
+    { _id: new ObjectID(), text: 'Second test todo', completed: true, completedAt: 12345 }
 ];
 
 beforeEach((done) => {
-    Todo.remove({}).then(() => {
+    Todo.deleteMany({}).then(() => {
         Todo.insertMany(todos);
     }).then(() => done());
 });
@@ -97,8 +97,9 @@ describe('GET /todos/:id', () => {
 describe('DELETE /todos/:id', () => {
     it('should return delete a doc', (done) => {
         var hexId = todos[1]._id.toHexString();
+        
         request(app)
-            .delete(`/todos/${hexId}`)
+            .delete(`/todos/${hexId}`)            
             .expect(200)
             .expect((res) => {
                 expect(res.body.todo.text).toBe(todos[1].text);
@@ -125,4 +126,47 @@ describe('DELETE /todos/:id', () => {
             .expect(404)
             .end(done);
     });
+});
+
+describe('PATCH /todos/:id', () => {
+    it('should update and return todo doc', (done) => {
+        var hexId = todos[0]._id.toHexString();
+        var body = { text: 'This is changed', completed: true};
+        request(app)
+            .patch(`/todos/${hexId}`)
+            .send(body)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe('This is changed');
+                expect(res.body.todo.completed).toBeTruthy();
+                expect(typeof(res.body.todo.completedAt)).toBe('number');
+            })
+            .end(done);
+    });
+    it('should clear completedAt when todo is not completed', (done) => {
+        var hexId = todos[1]._id.toHexString();
+        var body = { text: 'This is also been changed', completed: false};
+        request(app)
+            .patch(`/todos/${hexId}`)
+            .send(body)
+            .expect(200)
+            .expect((res) => {
+                expect(res.body.todo.text).toBe('This is also been changed');
+                expect(res.body.todo.completed).toBeFalsy();
+                expect(res.body.todo.completedAt).not.toBeTruthy();
+            })
+            .end(done);
+    });
+    // it('should return 404 with invalid id', (done) => {
+    //     request(app)
+    //         .patch('/todos/123')
+    //         .expect(404)
+    //         .end(done);
+    // });
+    // it('should return 404 with incorrect id', (done) => {
+    //     request(app)
+    //         .patch(`/todos/${new ObjectID().toHexString()}`)
+    //         .expect(404)
+    //         .end(done);
+    // });
 });
